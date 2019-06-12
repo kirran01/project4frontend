@@ -19,7 +19,10 @@ class Login extends Component {
         e.preventDefault()
         fetch('http://localhost:4000/api/user/login', {
             method: 'post',
-            body: JSON.stringify({ email: this.state.email, password: this.state.password })
+            body: JSON.stringify({ email: this.state.email, password: this.state.password }),
+            headers: {
+                'Content-Type': 'application/json'
+            }
         })
             .then(res => res.json())
             .then(user => {
