@@ -23,7 +23,7 @@ class Signup extends Component {
         const { password, confirmPassword, email } = this.state;
         if (password === confirmPassword) {
 
-            fetch('https://secret-wildwood-21633.herokuapp.com/api/user/signup', {
+            fetch('http://localhost:4000/api/user/signup', {
                 method: 'post',
                 body: JSON.stringify({ email: email, password: password }),
                 headers: {

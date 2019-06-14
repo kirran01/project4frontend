@@ -18,7 +18,7 @@ class Login extends Component {
     }
     Login = (e) => {
         e.preventDefault()
-        fetch('https://secret-wildwood-21633.herokuapp.com/api/user/login', {
+        fetch('https://localhost4000/api/user/login', {
             method: 'post',
             body: JSON.stringify({ email: this.state.email, password: this.state.password }),
             headers: {

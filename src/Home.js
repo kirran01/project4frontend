@@ -21,7 +21,7 @@ class Home extends React.Component {
             const user = JSON.parse(localStorage.getItem('user'));
             const userId = user._id;
             console.log(userId);
-            fetch(`https://secret-wildwood-21633.herokuapp.com/api/user/user/${userId}`)
+            fetch(`http://localhost4000/api/user/user/${userId}`)
                 .then(res => res.json())
                 .then(user => {
                     console.log(user);
@@ -41,7 +41,7 @@ class Home extends React.Component {
         const user = JSON.parse(localStorage.getItem("user"))
         const userId = user._id
         console.log(userId)
-        fetch(`https://secret-wildwood-21633.herokuapp.com/api/user/deletePost`, {
+        fetch(`http://localhost4000/api/user/deletePost`, {
             method: "PUT",
             body: JSON.stringify({ post: url, id: userId }),
             //specifies backend to expect json content 
@@ -69,7 +69,7 @@ class Home extends React.Component {
         const userId = user._id
         const { links, link } = this.state;
         console.log({ post: link });
-        fetch(`https://secret-wildwood-21633.herokuapp.com/api/user/updateposts/${userId}`, {
+        fetch(`http://localhost:4000/api/user/updateposts/${userId}`, {
             method: "PUT",
             body: JSON.stringify({ post: link }),
             //specifies backend to expect json content 
