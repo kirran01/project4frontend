@@ -1,5 +1,5 @@
 import React from 'react';
-import './App.css';
+import './Home.css';
 import InstagramEmbed from 'react-instagram-embed';
 import { TwitterVideoEmbed } from 'react-twitter-embed';
 import Login from './Login'
@@ -10,15 +10,18 @@ class Home extends React.Component {
         super(props);
         this.state = {
             links: [],
-            link: ''
+            link: '',
+            err: ""
         }
     }
+
+
     componentDidMount() {
         if (localStorage.getItem('user')) {
             const user = JSON.parse(localStorage.getItem('user'));
             const userId = user._id;
             console.log(userId);
-            fetch(`http://localhost:4000/api/user/user/${userId}`)
+            fetch(`https://secret-wildwood-21633.herokuapp.com/api/user/user/${userId}`)
                 .then(res => res.json())
                 .then(user => {
                     console.log(user);
@@ -34,6 +37,31 @@ class Home extends React.Component {
         this.setState({ link: e.target.value })
     }
 
+    deletePost = (url) => {
+        const user = JSON.parse(localStorage.getItem("user"))
+        const userId = user._id
+        console.log(userId)
+        fetch(`https://secret-wildwood-21633.herokuapp.com/api/user/deletePost`, {
+            method: "PUT",
+            body: JSON.stringify({ post: url, id: userId }),
+            //specifies backend to expect json content 
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        })
+            .then(res => res.json())
+            .then(message => {
+                //remove from front end automatically
+                const { links } = this.state;
+                const updatedLinks = links.filter(link => {
+                    return link !== url
+                })
+                this.setState({
+                    links: updatedLinks
+                })
+            })
+    }
+
 
     onSubmit = (e) => {
         e.preventDefault();
@@ -41,7 +69,7 @@ class Home extends React.Component {
         const userId = user._id
         const { links, link } = this.state;
         console.log({ post: link });
-        fetch(`http://localhost:4000/api/user/updateposts/${userId}`, {
+        fetch(`https://secret-wildwood-21633.herokuapp.com/api/user/updateposts/${userId}`, {
             method: "PUT",
             body: JSON.stringify({ post: link }),
             //specifies backend to expect json content 
@@ -50,9 +78,17 @@ class Home extends React.Component {
             }
 
         })
-            .then(res => {
-                links.push(this.state.link);
-                this.setState({ links: links });
+            .then(res => res.json())
+            .then(entry => {
+                if (entry.nModified === 1) {
+                    links.push(this.state.link);
+                    this.setState({ links: links, err: "" });
+
+                } else {
+                    this.setState({
+                        err: "video already exists"
+                    })
+                }
             })
             .catch(err => {
                 console.log(err)
@@ -65,44 +101,54 @@ class Home extends React.Component {
         return (
             <div>
                 <h1> Upload instagram or twitter videos</h1>
+                {this.state.err && <div>{this.state.err}</div>}
                 <form onSubmit={this.onSubmit}>
-                    <div class="instructions">
+                    <div className="instructions">
                         <p> To find the link to a twitter video, you have to right click on the video and copy video address </p>
                     </div>
                     <input onChange={this.onChange} type="text" name="link" placeholder="Insert link to video" />
                     <button type="submit"> Upload </button>
                 </form>
-                {
-                    this.state.links.length > 0 && this.state.links.map(link => {
-                        if (link.includes('instagram')) {
-                            return (
-                                <InstagramEmbed
-                                    url={link}
-                                    maxWidth={320}
-                                    hideCaption={false}
-                                    containerTagName='div'
-                                    protocol=''
-                                    injectScript
-                                    onLoading={() => { }}
-                                    onSuccess={() => { }}
-                                    onAfterRender={() => { }}
-                                    onFailure={() => { }}
-                                />
-                            )
-                        } else if (link.includes('twitter')) {
-                            const split = link.split('status/');
-                            return (
-                                <TwitterVideoEmbed
-                                    id={split[1]}
-                                />
-                            )
-                        }
+                <div className="items-grid">
+                    {
+                        this.state.links.length > 0 && this.state.links.map(link => {
+                            if (link.includes('instagram')) {
+                                return (
+                                    <div>
+                                        <InstagramEmbed
+                                            className="insta-video"
+                                            url={link}
+                                            hideCaption={true}
+                                            containerTagName='div'
+                                            protocol=''
+                                            injectScript
+                                            onLoading={() => { }}
+                                            onSuccess={() => { }}
+                                            onAfterRender={() => { }}
+                                            onFailure={() => { }}
+                                        />
+                                        <button onClick={() => this.deletePost(link)}>delete</button>
+                                    </div>
+                                )
+                            } else if (link.includes('twitter')) {
+                                const split = link.split('status/');
+                                return (
+                                    <div>
+                                        <TwitterVideoEmbed
+                                            className="twitter-video"
+                                            id={split[1]}
+
+                                        />
+                                        <button onClick={() => this.deletePost(link)}>delete</button>
+                                    </div>
+                                )
+                            }
 
 
 
-                    })
-                }
-
+                        })
+                    }
+                </div>
             </div>
         )
     }
