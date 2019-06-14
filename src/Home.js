@@ -107,7 +107,7 @@ class Home extends React.Component {
                         <p> To find the link to a twitter video, you have to right click on the video and copy video address </p>
                     </div>
                     <input onChange={this.onChange} type="text" name="link" placeholder="Insert link to video" />
-                    <button type="submit"> Upload </button>
+                    <button className="button" type="submit"> Upload </button>
                 </form>
                 <div className="items-grid">
                     {
@@ -139,7 +139,7 @@ class Home extends React.Component {
                                             id={split[1]}
 
                                         />
-                                        <button onClick={() => this.deletePost(link)}>delete</button>
+                                        <button className="button" onClick={() => this.deletePost(link)}>delete</button>
                                     </div>
                                 )
                             }
