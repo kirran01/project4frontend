@@ -1,0 +1,14 @@
+.items-grid{
+  display:grid;
+  grid-template-columns: 500px 500px 500px;
+  grid-gap: 1em;
+}
+
+.insta-video{
+width:100%;
+}
+
+.twitter-video{
+    width:100%;
+} 
+
