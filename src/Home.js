@@ -21,7 +21,7 @@ class Home extends React.Component {
             const user = JSON.parse(localStorage.getItem('user'));
             const userId = user._id;
             console.log(userId);
-            fetch(`http://localhost4000/api/user/user/${userId}`)
+            fetch(`http://localhost:4000/api/user/user/${userId}`)
                 .then(res => res.json())
                 .then(user => {
                     console.log(user);
@@ -38,10 +38,11 @@ class Home extends React.Component {
     }
 
     deletePost = (url) => {
+        //identify user
         const user = JSON.parse(localStorage.getItem("user"))
         const userId = user._id
         console.log(userId)
-        fetch(`http://localhost4000/api/user/deletePost`, {
+        fetch(`http://localhost:4000/api/user/deletePost`, {
             method: "PUT",
             body: JSON.stringify({ post: url, id: userId }),
             //specifies backend to expect json content 
@@ -51,7 +52,7 @@ class Home extends React.Component {
         })
             .then(res => res.json())
             .then(message => {
-                //remove from front end automatically
+                //remove from front end automatically instead of only upon refresh
                 const { links } = this.state;
                 const updatedLinks = links.filter(link => {
                     return link !== url
@@ -62,9 +63,10 @@ class Home extends React.Component {
             })
     }
 
-
+    //submit a post
     onSubmit = (e) => {
         e.preventDefault();
+        //identify user
         const user = JSON.parse(localStorage.getItem("user"))
         const userId = user._id
         const { links, link } = this.state;
@@ -100,11 +102,11 @@ class Home extends React.Component {
     render() {
         return (
             <div>
-                <h1> Upload instagram or twitter videos</h1>
+                <h1> Upload a Video</h1>
                 {this.state.err && <div>{this.state.err}</div>}
                 <form onSubmit={this.onSubmit}>
                     <div className="instructions">
-                        <p> To find the link to a twitter video, you have to right click on the video and copy video address </p>
+                        <p> To find the link to a twitter or instagram video, right click on the video and copy video address </p>
                     </div>
                     <input onChange={this.onChange} type="text" name="link" placeholder="Insert link to video" />
                     <button className="button" type="submit"> Upload </button>
@@ -112,6 +114,7 @@ class Home extends React.Component {
                 <div className="items-grid">
                     {
                         this.state.links.length > 0 && this.state.links.map(link => {
+                            //seperate instagram and twitter posts via conditional
                             if (link.includes('instagram')) {
                                 return (
                                     <div>

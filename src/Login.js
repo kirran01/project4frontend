@@ -18,7 +18,7 @@ class Login extends Component {
     }
     Login = (e) => {
         e.preventDefault()
-        fetch('https://localhost4000/api/user/login', {
+        fetch('http://localhost:4000/api/user/login', {
             method: 'post',
             body: JSON.stringify({ email: this.state.email, password: this.state.password }),
             headers: {
@@ -28,7 +28,7 @@ class Login extends Component {
             .then(res => res.json())
             .then(user => {
                 localStorage.setItem('user', JSON.stringify(user))
-                this.history.push('/');
+                this.props.history.push('/');
             })
     }
     render() {
@@ -41,7 +41,7 @@ class Login extends Component {
                     <input className="login-input" type='email' name='email' onChange={this.onChange} />
                     <label className="login-label">password</label>
                     <input className="login-input" type='password' name='password' onChange={this.onChange} />
-                    <button type='submit'>login</button>
+                    <button className="button" type='submit'>login</button>
                 </form>
             </div>
         )

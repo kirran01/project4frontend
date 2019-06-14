@@ -33,7 +33,7 @@ class Signup extends Component {
                 .then(res => res.json())
                 .then(user => {
                     localStorage.setItem('user', JSON.stringify(user))
-                    this.history.push('/');
+                    this.props.history.push('/');
                 })
                 .catch(err => console.log(err));
 
