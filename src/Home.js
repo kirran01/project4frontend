@@ -17,19 +17,26 @@ class Home extends React.Component {
 
 
     componentDidMount() {
-        if (localStorage.getItem('user')) {
-            const user = JSON.parse(localStorage.getItem('user'));
-            const userId = user._id;
-            console.log(userId);
-            fetch(`http://localhost:4000/api/user/user/${userId}`)
-                .then(res => res.json())
-                .then(user => {
-                    console.log(user);
-                    this.setState({
-                        links: user.posts
-                    })
-                })
+        // if (localStorage.getItem('user')) {
+        //     const user = JSON.parse(localStorage.getItem('user'));
+        //     const userId = user._id;
+        //     console.log(userId);
+        //     fetch(`http://localhost:4000/api/user/user/${userId}`)
+        //         .then(res => res.json())
+        //         .then(user => {
+        //             console.log(user);
+        //             this.setState({
+        //                 links: user.posts
+        //             })
+        //         })
 
+        // }
+
+        if (localStorage.getItem('links')) {
+            const links = JSON.parse(localStorage.getItem('links'));
+            this.setState({
+                links
+            });
         }
     }
 
@@ -42,25 +49,31 @@ class Home extends React.Component {
         const user = JSON.parse(localStorage.getItem("user"))
         const userId = user._id
         console.log(userId)
-        fetch(`http://localhost:4000/api/user/deletePost`, {
-            method: "PUT",
-            body: JSON.stringify({ post: url, id: userId }),
-            //specifies backend to expect json content 
-            headers: {
-                'Content-Type': 'application/json'
-            }
+        // fetch(`http://localhost:4000/api/user/deletePost`, {
+        //     method: "PUT",
+        //     body: JSON.stringify({ post: url, id: userId }),
+        //     //specifies backend to expect json content 
+        //     headers: {
+        //         'Content-Type': 'application/json'
+        //     }
+        // })
+        //     .then(res => res.json())
+        //     .then(message => {
+        //         //remove from front end automatically instead of only upon refresh
+
+
+        //     })
+
+        const { links } = this.state;
+        const updatedLinks = links.filter(link => {
+            return link !== url
         })
-            .then(res => res.json())
-            .then(message => {
-                //remove from front end automatically instead of only upon refresh
-                const { links } = this.state;
-                const updatedLinks = links.filter(link => {
-                    return link !== url
-                })
-                this.setState({
-                    links: updatedLinks
-                })
-            })
+        this.setState({
+            links: updatedLinks
+        }, () => {
+            localStorage.setItem('links', this.state.links);
+        })
+
     }
 
     //submit a post
@@ -72,30 +85,36 @@ class Home extends React.Component {
         //transform the urls to links within the state array
         const { links, link } = this.state;
         console.log({ post: link });
-        fetch(`http://localhost:4000/api/user/updateposts/${userId}`, {
-            method: "PUT",
-            body: JSON.stringify({ post: link }),
-            //specifies backend to expect json content 
-            headers: {
-                'Content-Type': 'application/json'
-            }
+        // fetch(`http://localhost:4000/api/user/updateposts/${userId}`, {
+        //     method: "PUT",
+        //     body: JSON.stringify({ post: link }),
+        //     //specifies backend to expect json content 
+        //     headers: {
+        //         'Content-Type': 'application/json'
+        //     }
 
+        // })
+        //     .then(res => res.json())
+        //     .then(entry => {
+        //         if (entry.nModified === 1) {
+        //             links.push(this.state.link);
+        //             this.setState({ links: links, err: "" });
+
+        //         } else {
+        //             this.setState({
+        //                 err: "video already exists"
+        //             })
+        //         }
+        //     })
+        //     .catch(err => {
+        //         console.log(err)
+        //     })
+
+        this.setState({
+            links: [...this.state.links, this.state.link]
+        }, () => {
+            localStorage.setItem('links', this.state.links);
         })
-            .then(res => res.json())
-            .then(entry => {
-                if (entry.nModified === 1) {
-                    links.push(this.state.link);
-                    this.setState({ links: links, err: "" });
-
-                } else {
-                    this.setState({
-                        err: "video already exists"
-                    })
-                }
-            })
-            .catch(err => {
-                console.log(err)
-            })
 
 
 
