@@ -1,5 +1,5 @@
 import React from 'react';
-import './Home.css';
+import './Home.scss';
 import InstagramEmbed from 'react-instagram-embed';
 import { TwitterVideoEmbed } from 'react-twitter-embed';
 import Login from './Login'
@@ -46,9 +46,9 @@ class Home extends React.Component {
 
     deletePost = (url) => {
         //identify user
-        const user = JSON.parse(localStorage.getItem("user"))
-        const userId = user._id
-        console.log(userId)
+        // const user = JSON.parse(localStorage.getItem("user"))
+        // const userId = user._id
+        // console.log(userId)
         // fetch(`http://localhost:4000/api/user/deletePost`, {
         //     method: "PUT",
         //     body: JSON.stringify({ post: url, id: userId }),
@@ -71,7 +71,7 @@ class Home extends React.Component {
         this.setState({
             links: updatedLinks
         }, () => {
-            localStorage.setItem('links', this.state.links);
+            localStorage.setItem('links', JSON.stringify(this.state.links));
         })
 
     }
@@ -80,11 +80,11 @@ class Home extends React.Component {
     onSubmit = (e) => {
         e.preventDefault();
         //identify user
-        const user = JSON.parse(localStorage.getItem("user"))
-        const userId = user._id
+        // const user = JSON.parse(localStorage.getItem("user"))
+        // const userId = user._id
         //transform the urls to links within the state array
         const { links, link } = this.state;
-        console.log({ post: link });
+        // console.log({ post: link });
         // fetch(`http://localhost:4000/api/user/updateposts/${userId}`, {
         //     method: "PUT",
         //     body: JSON.stringify({ post: link }),
@@ -113,7 +113,7 @@ class Home extends React.Component {
         this.setState({
             links: [...this.state.links, this.state.link]
         }, () => {
-            localStorage.setItem('links', this.state.links);
+            localStorage.setItem('links', JSON.stringify(this.state.links));
         })
 
 
@@ -128,8 +128,12 @@ class Home extends React.Component {
                     <div className="instructions">
                         <p> To find the link to a twitter or instagram video, right click on the video and copy video address </p>
                     </div>
-                    <input onChange={this.onChange} type="text" name="link" placeholder="Insert link to video" />
-                    <button className="button" type="submit"> Upload </button>
+
+                    <div className="flex">
+                        <input className="input" onChange={this.onChange} type="text" name="link" placeholder="Paste a link to get started" />
+
+                        <button className="button btn-slide-line center" type="submit"> Upload </button>
+                    </div>
                 </form>
                 <div className="items-grid">
                     {
@@ -150,7 +154,7 @@ class Home extends React.Component {
                                             onAfterRender={() => { }}
                                             onFailure={() => { }}
                                         />
-                                        <button onClick={() => this.deletePost(link)}>delete</button>
+                                        <button className="btn-pill" onClick={() => this.deletePost(link)}>delete</button>
                                     </div>
                                 )
                             } else if (link.includes('twitter')) {
