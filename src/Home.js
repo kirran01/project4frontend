@@ -69,6 +69,7 @@ class Home extends React.Component {
         //identify user
         const user = JSON.parse(localStorage.getItem("user"))
         const userId = user._id
+        //transform the urls to links within the state array
         const { links, link } = this.state;
         console.log({ post: link });
         fetch(`http://localhost:4000/api/user/updateposts/${userId}`, {
